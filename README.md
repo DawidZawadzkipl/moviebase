@@ -29,7 +29,7 @@ W `src/main/resources/application.properties` ustaw login/hasło do bazy.
 mvn spring-boot:run
 ```
 
-Adres: `http://localhost:8080`
+Adres: `http://localhost:8090`
 
 ## Konta testowe
 Tworzą się automatycznie przy pierwszym starcie:
