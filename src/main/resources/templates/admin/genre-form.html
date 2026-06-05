@@ -1,0 +1,39 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(#{admin.genre.form})}"></head>
+<body>
+<div th:replace="~{fragments/layout :: nav}"></div>
+
+<main class="container py-4">
+    <div class="admin-form">
+        <div class="d-flex justify-content-between align-items-center gap-3 mb-3">
+            <h1 class="mb-0" th:text="#{admin.genre.form}">Gatunek</h1>
+            <a th:href="@{/admin/genres}" class="btn btn-outline-secondary" th:text="#{button.back}">Wroc</a>
+        </div>
+
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+        <form th:action="${genre.id == null}
+                          ? @{/admin/genres}
+                          : @{/admin/genres/{id}(id=${genre.id})}"
+              th:object="${genre}"
+              method="post"
+              class="card p-4 shadow-sm">
+            <div class="mb-3">
+                <label class="form-label" th:text="#{admin.genre.namePl}">Nazwa po polsku</label>
+                <input class="form-control" th:field="*{namePl}" maxlength="80" required>
+                <div class="text-danger small" th:errors="*{namePl}"></div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label" th:text="#{admin.genre.nameEn}">Nazwa po angielsku</label>
+                <input class="form-control" th:field="*{nameEn}" maxlength="80" required>
+                <div class="text-danger small" th:errors="*{nameEn}"></div>
+            </div>
+
+            <button class="btn btn-dark" th:text="#{button.save}">Zapisz</button>
+        </form>
+    </div>
+</main>
+</body>
+</html>

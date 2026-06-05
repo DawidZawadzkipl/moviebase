@@ -1,11 +1,11 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/layout :: head('Film')}"></head>
+<head th:replace="~{fragments/layout :: head(#{admin.movieForm})}"></head>
 <body>
 <div th:replace="~{fragments/layout :: nav}"></div>
 
 <main class="container py-4">
-    <h1>Formularz filmu</h1>
+    <h1 th:text="#{admin.movieForm}">Formularz filmu</h1>
     <form th:action="${movie.id == null}
                       ? @{/admin/movies}
                       : @{/admin/movies/{id}(id=${movie.id})}"
@@ -15,52 +15,57 @@
           class="card p-4 shadow-sm">
 
         <div class="mb-3">
-            <label class="form-label">Tytuł</label>
+            <label class="form-label" th:text="#{admin.movie.title}">Tytul</label>
             <input class="form-control" th:field="*{title}">
             <div class="text-danger small" th:errors="*{title}"></div>
         </div>
 
         <div class="mb-3">
-            <label class="form-label">Tytuł oryginalny</label>
+            <label class="form-label" th:text="#{admin.movie.originalTitle}">Tytul oryginalny</label>
             <input class="form-control" th:field="*{originalTitle}">
         </div>
 
         <div class="mb-3">
-            <label class="form-label">Opis</label>
+            <label class="form-label" th:text="#{admin.movie.description}">Opis</label>
             <textarea rows="5" class="form-control" th:field="*{description}"></textarea>
             <div class="text-danger small" th:errors="*{description}"></div>
         </div>
 
         <div class="row">
             <div class="col-md-6 mb-3">
-                <label class="form-label">Rok</label>
+                <label class="form-label" th:text="#{admin.movie.year}">Rok</label>
                 <input class="form-control" type="number" th:field="*{releaseYear}">
             </div>
             <div class="col-md-6 mb-3">
-                <label class="form-label">Czas min.</label>
+                <label class="form-label" th:text="#{admin.movie.duration}">Czas min.</label>
                 <input class="form-control" type="number" th:field="*{durationMinutes}">
             </div>
         </div>
 
         <div class="mb-3">
-            <label class="form-label">Trailer URL</label>
+            <label class="form-label" th:text="#{admin.movie.trailer}">Trailer URL</label>
             <input class="form-control" th:field="*{trailerUrl}">
         </div>
 
         <div class="mb-3">
-            <label class="form-label">Plakat</label>
+            <label class="form-label" th:text="#{admin.movie.poster}">Plakat</label>
             <input class="form-control" type="file" name="poster" accept="image/*">
         </div>
 
         <div class="mb-3">
-            <label class="form-label">Gatunki</label>
+            <div class="d-flex justify-content-between align-items-center gap-3 mb-2">
+                <label class="form-label mb-0" th:text="#{admin.movie.genres}">Gatunki</label>
+                <a class="btn btn-sm btn-outline-secondary"
+                   th:href="@{/admin/genres}"
+                   th:text="#{admin.movie.manageGenres}">Zarzadzaj gatunkami</a>
+            </div>
             <div class="form-check" th:each="g : ${genres}">
                 <input class="form-check-input"
                        type="checkbox"
                        name="genreIds"
                        th:value="${g.id}"
                        th:checked="${movie.genres.contains(g)}">
-                <label class="form-check-label" th:text="${g.namePl}">Gatunek</label>
+                <label class="form-check-label" th:text="${#locale.language == 'en' ? g.nameEn : g.namePl}">Gatunek</label>
             </div>
         </div>
 

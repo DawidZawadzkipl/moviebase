@@ -5,29 +5,43 @@
 <div th:replace="~{fragments/layout :: nav}"></div>
 
 <main class="container py-4">
-    <h1>Panel administratora</h1>
+    <div class="page-heading">
+        <div>
+            <p class="text-muted mb-1">MovieBase</p>
+            <h1 class="mb-0" th:text="#{admin.title}">Panel administratora</h1>
+        </div>
+    </div>
+
     <div class="row g-3">
         <div class="col-md-4">
-            <div class="card">
+            <div class="card admin-card">
                 <div class="card-body">
-                    <h5>Użytkownicy</h5>
+                    <h2 th:text="#{admin.users}">Uzytkownicy</h2>
                     <p class="display-6" th:text="${users}">0</p>
                 </div>
             </div>
         </div>
         <div class="col-md-4">
-            <a class="card text-decoration-none text-dark" th:href="@{/admin/movies}">
+            <a class="card admin-card text-decoration-none text-dark" th:href="@{/admin/movies}">
                 <div class="card-body">
-                    <h5>Filmy</h5>
-                    <p>Zarządzaj bazą filmów</p>
+                    <h2 th:text="#{admin.movies.short}">Filmy</h2>
+                    <p th:text="#{admin.movies.copy}">Zarzadzaj baza filmow</p>
                 </div>
             </a>
         </div>
         <div class="col-md-4">
-            <a class="card text-decoration-none text-dark" th:href="@{/admin/reviews}">
+            <a class="card admin-card text-decoration-none text-dark" th:href="@{/admin/genres}">
                 <div class="card-body">
-                    <h5>Recenzje</h5>
-                    <p>Moderuj i usuwaj recenzje</p>
+                    <h2 th:text="#{admin.genres}">Gatunki</h2>
+                    <p><span th:text="${genres}">0</span> <span th:text="#{admin.genres.copy}">kategorii filmow</span></p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a class="card admin-card text-decoration-none text-dark" th:href="@{/admin/reviews}">
+                <div class="card-body">
+                    <h2 th:text="#{admin.reviews}">Recenzje</h2>
+                    <p th:text="#{admin.reviews.copy}">Moderuj i usuwaj recenzje</p>
                 </div>
             </a>
         </div>

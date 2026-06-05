@@ -2,6 +2,7 @@ package pl.dawid.moviebase.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -9,9 +10,9 @@ import java.util.Set;
 public class Genre {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank @Column(nullable = false, unique = true)
+    @NotBlank @Size(max = 80) @Column(nullable = false, unique = true)
     private String namePl;
-    @NotBlank @Column(nullable = false, unique = true)
+    @NotBlank @Size(max = 80) @Column(nullable = false, unique = true)
     private String nameEn;
     @ManyToMany(mappedBy = "genres")
     private Set<Movie> movies = new HashSet<>();

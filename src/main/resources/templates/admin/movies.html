@@ -5,43 +5,73 @@
 <div th:replace="~{fragments/layout :: nav}"></div>
 
 <main class="container py-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h1 th:text="#{admin.movies}">Filmy</h1>
+    <div class="d-flex justify-content-between align-items-center gap-3 mb-3">
+        <div>
+            <a th:href="@{/admin}" class="text-muted text-decoration-none" th:text="#{admin.back}">Panel admina</a>
+            <h1 class="mb-0" th:text="#{admin.movies}">Zarzadzanie filmami</h1>
+        </div>
         <a class="btn btn-warning"
            th:href="@{/admin/movies/new}"
            th:text="#{button.add}">Dodaj</a>
     </div>
 
-    <form class="mb-3" method="get">
-        <input class="form-control"
-               name="q"
-               th:value="${q}"
-               placeholder="Szukaj...">
+    <form class="filter-panel mb-3" method="get">
+        <div class="d-flex gap-2">
+            <input class="form-control"
+                   name="q"
+                   th:value="${q}"
+                   th:placeholder="#{movies.search}">
+            <button class="btn btn-dark" th:text="#{button.search}">Szukaj</button>
+        </div>
     </form>
 
     <table class="table table-striped align-middle">
         <thead>
         <tr>
-            <th>Tytuł</th>
-            <th>Rok</th>
-            <th>Akcje</th>
+            <th th:text="#{admin.table.title}">Tytul</th>
+            <th th:text="#{admin.table.year}">Rok</th>
+            <th class="text-end" th:text="#{admin.table.actions}">Akcje</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="movie : ${movies.content}">
-            <td th:text="${movie.title}"></td>
-            <td th:text="${movie.releaseYear}"></td>
-            <td class="d-flex gap-2">
-                <a class="btn btn-sm btn-outline-dark"
-                   th:href="@{/admin/movies/{id}/edit(id=${movie.id})}"
-                   th:text="#{button.edit}">Edytuj</a>
-                <form th:action="@{/admin/movies/{id}/delete(id=${movie.id})}" method="post">
-                    <button class="btn btn-sm btn-outline-danger" th:text="#{button.delete}">Usuń</button>
-                </form>
+            <td th:text="${movie.title}">Tytul</td>
+            <td th:text="${movie.releaseYear}">2026</td>
+            <td class="text-end">
+                <div class="d-inline-flex gap-2">
+                    <a class="btn btn-sm btn-outline-dark"
+                       th:href="@{/admin/movies/{id}/edit(id=${movie.id})}"
+                       th:text="#{button.edit}">Edytuj</a>
+                    <form th:action="@{/admin/movies/{id}/delete(id=${movie.id})}" method="post">
+                        <button class="btn btn-sm btn-outline-danger" th:text="#{button.delete}">Usun</button>
+                    </form>
+                </div>
             </td>
         </tr>
         </tbody>
     </table>
+
+    <nav class="mt-4" th:if="${movies.totalPages > 1}" th:attr="aria-label=#{movies.pagination.label}">
+        <ul class="pagination justify-content-center flex-wrap">
+            <li class="page-item" th:classappend="${movies.first} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/admin/movies(q=${q},page=${movies.number-1})}"
+                   th:text="#{movies.pagination.prev}">Poprzednia</a>
+            </li>
+            <li class="page-item"
+                th:each="i : ${#numbers.sequence(0, movies.totalPages-1)}"
+                th:classappend="${i == movies.number} ? 'active'">
+                <a class="page-link"
+                   th:href="@{/admin/movies(q=${q},page=${i})}"
+                   th:text="${i+1}">1</a>
+            </li>
+            <li class="page-item" th:classappend="${movies.last} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/admin/movies(q=${q},page=${movies.number+1})}"
+                   th:text="#{movies.pagination.next}">Nastepna</a>
+            </li>
+        </ul>
+    </nav>
 </main>
 </body>
 </html>
