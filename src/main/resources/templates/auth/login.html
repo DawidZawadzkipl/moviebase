@@ -1,0 +1,30 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(#{nav.login})}"></head>
+<body>
+<div th:replace="~{fragments/layout :: nav}"></div>
+
+<main class="container auth-box py-5">
+    <div class="card shadow">
+        <div class="card-body p-4">
+            <h1 class="h3 mb-3" th:text="#{nav.login}">Logowanie</h1>
+            <div th:if="${param.error}" class="alert alert-danger" th:text="#{login.error}">Błąd</div>
+            <div th:if="${param.registered}" class="alert alert-success">
+                Konto utworzone. Możesz się zalogować.
+            </div>
+            <form th:action="@{/login}" method="post">
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input class="form-control" type="email" name="email" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Hasło</label>
+                    <input class="form-control" type="password" name="password" required>
+                </div>
+                <button class="btn btn-dark w-100">Zaloguj</button>
+            </form>
+        </div>
+    </div>
+</main>
+</body>
+</html>

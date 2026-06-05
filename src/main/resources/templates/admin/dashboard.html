@@ -1,0 +1,37 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(#{nav.admin})}"></head>
+<body>
+<div th:replace="~{fragments/layout :: nav}"></div>
+
+<main class="container py-4">
+    <h1>Panel administratora</h1>
+    <div class="row g-3">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5>Użytkownicy</h5>
+                    <p class="display-6" th:text="${users}">0</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <a class="card text-decoration-none text-dark" th:href="@{/admin/movies}">
+                <div class="card-body">
+                    <h5>Filmy</h5>
+                    <p>Zarządzaj bazą filmów</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a class="card text-decoration-none text-dark" th:href="@{/admin/reviews}">
+                <div class="card-body">
+                    <h5>Recenzje</h5>
+                    <p>Moderuj i usuwaj recenzje</p>
+                </div>
+            </a>
+        </div>
+    </div>
+</main>
+</body>
+</html>

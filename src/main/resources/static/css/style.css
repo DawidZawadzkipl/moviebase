@@ -1,0 +1,7 @@
+body { background: #f7f7f8; }
+.hero { background: radial-gradient(circle at top left, #343a40, #111); }
+.movie-card { border: 0; overflow: hidden; }
+.poster { background: #d9d9de url('/css/no-poster.svg') center/cover no-repeat; height: 330px; }
+.poster-large { height: 560px; border-radius: 12px; }
+.auth-box { max-width: 520px; }
+.card { border-radius: 14px; }

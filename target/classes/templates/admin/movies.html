@@ -1,0 +1,47 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(#{admin.movies})}"></head>
+<body>
+<div th:replace="~{fragments/layout :: nav}"></div>
+
+<main class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 th:text="#{admin.movies}">Filmy</h1>
+        <a class="btn btn-warning"
+           th:href="@{/admin/movies/new}"
+           th:text="#{button.add}">Dodaj</a>
+    </div>
+
+    <form class="mb-3" method="get">
+        <input class="form-control"
+               name="q"
+               th:value="${q}"
+               placeholder="Szukaj...">
+    </form>
+
+    <table class="table table-striped align-middle">
+        <thead>
+        <tr>
+            <th>Tytuł</th>
+            <th>Rok</th>
+            <th>Akcje</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="movie : ${movies.content}">
+            <td th:text="${movie.title}"></td>
+            <td th:text="${movie.releaseYear}"></td>
+            <td class="d-flex gap-2">
+                <a class="btn btn-sm btn-outline-dark"
+                   th:href="@{/admin/movies/{id}/edit(id=${movie.id})}"
+                   th:text="#{button.edit}">Edytuj</a>
+                <form th:action="@{/admin/movies/{id}/delete(id=${movie.id})}" method="post">
+                    <button class="btn btn-sm btn-outline-danger" th:text="#{button.delete}">Usuń</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Film')}"></head>
+<body>
+<div th:replace="~{fragments/layout :: nav}"></div>
+
+<main class="container py-4">
+    <h1>Formularz filmu</h1>
+    <form th:action="${movie.id == null}
+                      ? @{/admin/movies}
+                      : @{/admin/movies/{id}(id=${movie.id})}"
+          th:object="${movie}"
+          method="post"
+          enctype="multipart/form-data"
+          class="card p-4 shadow-sm">
+
+        <div class="mb-3">
+            <label class="form-label">Tytuł</label>
+            <input class="form-control" th:field="*{title}">
+            <div class="text-danger small" th:errors="*{title}"></div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Tytuł oryginalny</label>
+            <input class="form-control" th:field="*{originalTitle}">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Opis</label>
+            <textarea rows="5" class="form-control" th:field="*{description}"></textarea>
+            <div class="text-danger small" th:errors="*{description}"></div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Rok</label>
+                <input class="form-control" type="number" th:field="*{releaseYear}">
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Czas min.</label>
+                <input class="form-control" type="number" th:field="*{durationMinutes}">
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Trailer URL</label>
+            <input class="form-control" th:field="*{trailerUrl}">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Plakat</label>
+            <input class="form-control" type="file" name="poster" accept="image/*">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Gatunki</label>
+            <div class="form-check" th:each="g : ${genres}">
+                <input class="form-check-input"
+                       type="checkbox"
+                       name="genreIds"
+                       th:value="${g.id}"
+                       th:checked="${movie.genres.contains(g)}">
+                <label class="form-check-label" th:text="${g.namePl}">Gatunek</label>
+            </div>
+        </div>
+
+        <button class="btn btn-dark" th:text="#{button.save}">Zapisz</button>
+    </form>
+</main>
+</body>
+</html>
