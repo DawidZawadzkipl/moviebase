@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.dawid.moviebase.model.*;
+import pl.dawid.moviebase.repository.GenreRepository;
 import pl.dawid.moviebase.service.*;
 
 @Controller
@@ -20,27 +21,48 @@ public class MovieController {
     private final ReviewService reviewService;
     private final UserService userService;
     private final WatchlistService watchlistService;
+    private final GenreRepository genreRepository;
 
     public MovieController(
             MovieService movieService,
             RatingService ratingService,
             ReviewService reviewService,
             UserService userService,
-            WatchlistService watchlistService) {
+            WatchlistService watchlistService,
+            GenreRepository genreRepository) {
         this.movieService = movieService;
         this.ratingService = ratingService;
         this.reviewService = reviewService;
         this.userService = userService;
         this.watchlistService = watchlistService;
+        this.genreRepository = genreRepository;
     }
 
-    @GetMapping({"/", "/movies"})
+    @GetMapping("/movies")
     public String movies(
             @RequestParam(defaultValue = "") String q,
+            @RequestParam(required = false) Long genreId,
+            @RequestParam(required = false) Integer yearFrom,
+            @RequestParam(required = false) Integer yearTo,
+            @RequestParam(defaultValue = "titleAsc") String sort,
             @RequestParam(defaultValue = "0") int page,
             Model model) {
-        model.addAttribute("movies", movieService.search(q, PageRequest.of(page, 8, Sort.by("title"))));
+        int currentPage = Math.max(page, 0);
+        Integer from = yearFrom;
+        Integer to = yearTo;
+        if (from != null && to != null && from > to) {
+            from = yearTo;
+            to = yearFrom;
+        }
+
+        model.addAttribute("movies",
+                movieService.search(q, genreId, from, to, PageRequest.of(currentPage, 12, sortFor(sort))));
         model.addAttribute("q", q);
+        model.addAttribute("genreId", genreId);
+        model.addAttribute("yearFrom", from);
+        model.addAttribute("yearTo", to);
+        model.addAttribute("sort", sort);
+        model.addAttribute("genres", genreRepository.findAll(Sort.by("namePl")));
         return "movies/list";
     }
 
@@ -89,5 +111,15 @@ public class MovieController {
         User user = userService.getByEmail(auth.getName());
         Long movieId = reviewService.deleteOwn(id, user);
         return "redirect:/movies/" + movieId;
+    }
+
+    private Sort sortFor(String value) {
+        return switch (value) {
+            case "yearDesc" -> Sort.by(Sort.Order.desc("releaseYear"), Sort.Order.asc("title"));
+            case "yearAsc" -> Sort.by(Sort.Order.asc("releaseYear"), Sort.Order.asc("title"));
+            case "newest" -> Sort.by(Sort.Order.desc("createdAt"), Sort.Order.asc("title"));
+            case "durationDesc" -> Sort.by(Sort.Order.desc("durationMinutes"), Sort.Order.asc("title"));
+            default -> Sort.by(Sort.Order.asc("title"));
+        };
     }
 }

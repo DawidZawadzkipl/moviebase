@@ -4,61 +4,115 @@
 <body>
 <div th:replace="~{fragments/layout :: nav}"></div>
 
-<header class="hero py-5 mb-4">
-    <div class="container text-white">
-        <h1 class="display-5 fw-bold">MovieBase</h1>
-        <p class="lead">Mini baza filmów z ocenami, recenzjami i watchlistą.</p>
-        <form class="row g-2" th:action="@{/movies}" method="get">
-            <div class="col-md-10">
-                <input class="form-control form-control-lg"
+<main class="container py-4">
+    <div class="page-heading">
+        <div>
+            <p class="text-muted mb-1">MovieBase</p>
+            <h1 class="mb-0" th:text="#{movies.title}">Baza filmow</h1>
+        </div>
+        <span class="result-count">
+            <strong th:text="${movies.totalElements}">0</strong>
+            <span th:text="#{movies.results}">wynikow</span>
+        </span>
+    </div>
+
+    <form class="filter-panel mb-4" th:action="@{/movies}" method="get">
+        <div class="filter-grid">
+            <div>
+                <label class="form-label" for="q" th:text="#{movies.filter.search}">Szukaj</label>
+                <input id="q"
+                       class="form-control"
                        name="q"
                        th:value="${q}"
                        th:placeholder="#{movies.search}">
             </div>
-            <div class="col-md-2">
-                <button class="btn btn-warning btn-lg w-100" th:text="#{button.search}">Szukaj</button>
+            <div>
+                <label class="form-label" for="genreId" th:text="#{movies.filter.genre}">Gatunek</label>
+                <select id="genreId" class="form-select" name="genreId">
+                    <option value="" th:text="#{movies.filter.allGenres}">Wszystkie</option>
+                    <option th:each="g : ${genres}"
+                            th:value="${g.id}"
+                            th:selected="${g.id == genreId}"
+                            th:text="${#locale.language == 'en' ? g.nameEn : g.namePl}">Gatunek</option>
+                </select>
             </div>
-        </form>
-    </div>
-</header>
+            <div>
+                <label class="form-label" for="yearFrom" th:text="#{movies.filter.yearFrom}">Od roku</label>
+                <input id="yearFrom"
+                       class="form-control"
+                       type="number"
+                       name="yearFrom"
+                       min="1888"
+                       max="2100"
+                       th:value="${yearFrom}">
+            </div>
+            <div>
+                <label class="form-label" for="yearTo" th:text="#{movies.filter.yearTo}">Do roku</label>
+                <input id="yearTo"
+                       class="form-control"
+                       type="number"
+                       name="yearTo"
+                       min="1888"
+                       max="2100"
+                       th:value="${yearTo}">
+            </div>
+            <div>
+                <label class="form-label" for="sort" th:text="#{movies.filter.sort}">Sortowanie</label>
+                <select id="sort" class="form-select" name="sort">
+                    <option value="titleAsc" th:selected="${sort == 'titleAsc'}" th:text="#{movies.sort.titleAsc}">Tytul A-Z</option>
+                    <option value="newest" th:selected="${sort == 'newest'}" th:text="#{movies.sort.newest}">Najnowsze dodane</option>
+                    <option value="yearDesc" th:selected="${sort == 'yearDesc'}" th:text="#{movies.sort.yearDesc}">Rok malejaco</option>
+                    <option value="yearAsc" th:selected="${sort == 'yearAsc'}" th:text="#{movies.sort.yearAsc}">Rok rosnaco</option>
+                    <option value="durationDesc" th:selected="${sort == 'durationDesc'}" th:text="#{movies.sort.durationDesc}">Najdluzsze</option>
+                </select>
+            </div>
+            <div class="filter-actions">
+                <button class="btn btn-warning" th:text="#{button.search}">Szukaj</button>
+                <a class="btn btn-outline-secondary" th:href="@{/movies}" th:text="#{button.clear}">Wyczysc</a>
+            </div>
+        </div>
+    </form>
 
-<main class="container">
-    <div th:if="${movies.empty}" class="alert alert-info" th:text="#{movies.noResults}">Brak filmów</div>
-    <div class="row g-4">
-        <div class="col-sm-6 col-md-4 col-lg-3" th:each="movie : ${movies.content}">
+    <div th:if="${movies.empty}" class="alert alert-info" th:text="#{movies.noResults}">Brak filmow</div>
+
+    <div class="row g-4" th:if="${!movies.empty}">
+        <div class="col-sm-6 col-md-4 col-xl-3" th:each="movie : ${movies.content}">
             <div class="card movie-card h-100 shadow-sm">
                 <div class="poster"
-                     th:style="${movie.posterPath != null}
-                         ? 'background-image:url(' + ${movie.posterPath} + ')'
-                         : ''"></div>
+                     th:style="${movie.posterPath != null
+                         ? 'background-image:url(' + movie.posterPath + ')'
+                         : ''}"></div>
                 <div class="card-body d-flex flex-column">
-                    <h5 class="card-title" th:text="${movie.title}">Tytuł</h5>
+                    <h2 class="card-title h5" th:text="${movie.title}">Tytul</h2>
                     <p class="text-muted small"
-                       th:text="${movie.releaseYear} + ' • ' + ${movie.durationMinutes} + ' min'">2026</p>
-                    <p class="small text-truncate" th:text="${movie.description}">Opis</p>
+                       th:text="|${movie.releaseYear} / ${movie.durationMinutes} min|">2026</p>
+                    <p class="movie-description" th:text="${movie.description}">Opis</p>
                     <a class="btn btn-dark mt-auto"
-                       th:href="@{/movies/{id}(id=${movie.id})}">Szczegóły</a>
+                       th:href="@{/movies/{id}(id=${movie.id})}"
+                       th:text="#{button.details}">Szczegoly</a>
                 </div>
             </div>
         </div>
     </div>
 
-    <nav class="mt-4" th:if="${movies.totalPages > 1}">
-        <ul class="pagination justify-content-center">
+    <nav class="mt-4" th:if="${movies.totalPages > 1}" th:attr="aria-label=#{movies.pagination.label}">
+        <ul class="pagination justify-content-center flex-wrap">
             <li class="page-item" th:classappend="${movies.first} ? 'disabled'">
                 <a class="page-link"
-                   th:href="@{/movies(q=${q},page=${movies.number-1})}">«</a>
+                   th:href="@{/movies(q=${q},genreId=${genreId},yearFrom=${yearFrom},yearTo=${yearTo},sort=${sort},page=${movies.number-1})}"
+                   th:text="#{movies.pagination.prev}">Poprzednia</a>
             </li>
             <li class="page-item"
                 th:each="i : ${#numbers.sequence(0, movies.totalPages-1)}"
                 th:classappend="${i == movies.number} ? 'active'">
                 <a class="page-link"
-                   th:href="@{/movies(q=${q},page=${i})}"
+                   th:href="@{/movies(q=${q},genreId=${genreId},yearFrom=${yearFrom},yearTo=${yearTo},sort=${sort},page=${i})}"
                    th:text="${i+1}">1</a>
             </li>
             <li class="page-item" th:classappend="${movies.last} ? 'disabled'">
                 <a class="page-link"
-                   th:href="@{/movies(q=${q},page=${movies.number+1})}">»</a>
+                   th:href="@{/movies(q=${q},genreId=${genreId},yearFrom=${yearFrom},yearTo=${yearTo},sort=${sort},page=${movies.number+1})}"
+                   th:text="#{movies.pagination.next}">Nastepna</a>
             </li>
         </ul>
     </nav>

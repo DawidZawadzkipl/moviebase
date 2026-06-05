@@ -8,20 +8,20 @@
     <div class="card shadow">
         <div class="card-body p-4">
             <h1 class="h3 mb-3" th:text="#{nav.login}">Logowanie</h1>
-            <div th:if="${param.error}" class="alert alert-danger" th:text="#{login.error}">Błąd</div>
-            <div th:if="${param.registered}" class="alert alert-success">
-                Konto utworzone. Możesz się zalogować.
+            <div th:if="${param.error}" class="alert alert-danger" th:text="#{login.error}">Blad</div>
+            <div th:if="${param.registered}" class="alert alert-success" th:text="#{login.registered}">
+                Konto utworzone. Mozesz sie zalogowac.
             </div>
             <form th:action="@{/login}" method="post">
                 <div class="mb-3">
-                    <label class="form-label">Email</label>
+                    <label class="form-label" th:text="#{auth.email}">Email</label>
                     <input class="form-control" type="email" name="email" required>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">Hasło</label>
+                    <label class="form-label" th:text="#{auth.password}">Haslo</label>
                     <input class="form-control" type="password" name="password" required>
                 </div>
-                <button class="btn btn-dark w-100">Zaloguj</button>
+                <button class="btn btn-dark w-100" th:text="#{login.submit}">Zaloguj</button>
             </form>
         </div>
     </div>

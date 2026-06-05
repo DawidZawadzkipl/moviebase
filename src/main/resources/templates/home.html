@@ -1,0 +1,93 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(#{home.title})}"></head>
+<body>
+<div th:replace="~{fragments/layout :: nav}"></div>
+
+<header class="home-hero">
+    <div class="home-hero-slides" aria-hidden="true">
+        <span class="home-hero-slide"
+              th:each="movie : ${featuredMovies}"
+              th:if="${movie.posterPath != null}"
+              th:style="${'background-image:url(' + movie.posterPath + ')'}"></span>
+    </div>
+    <div class="container home-hero-content">
+        <p class="hero-kicker">MovieBase</p>
+        <h1 th:text="#{home.hero.title}">Twoja baza filmow, ocen i recenzji</h1>
+        <p class="hero-copy" th:text="#{home.hero.copy}">Opis</p>
+        <div class="d-flex flex-wrap gap-2">
+            <a class="btn btn-warning btn-lg" th:href="@{/movies}" th:text="#{home.hero.database}">Przejdz do bazy filmow</a>
+            <a class="btn btn-outline-light btn-lg" th:href="@{/register}" th:text="#{home.hero.register}">Zaloz konto</a>
+        </div>
+    </div>
+</header>
+
+<main class="container py-4">
+    <section class="stats-strip mb-4" th:attr="aria-label=#{home.stats.label}">
+        <div>
+            <strong th:text="${movieCount}">0</strong>
+            <span th:text="#{home.stats.movies}">filmow</span>
+        </div>
+        <div>
+            <strong th:text="${genreCount}">0</strong>
+            <span th:text="#{home.stats.genres}">gatunkow</span>
+        </div>
+        <div>
+            <strong th:text="${reviewCount}">0</strong>
+            <span th:text="#{home.stats.reviews}">recenzji</span>
+        </div>
+    </section>
+
+    <section>
+        <div class="d-flex justify-content-between align-items-end gap-3 mb-3">
+            <div>
+                <h2 class="section-title" th:text="#{home.latest.title}">Najnowsze w bazie</h2>
+                <p class="text-muted mb-0" th:text="#{home.latest.copy}">Ostatnio dodane filmy.</p>
+            </div>
+            <a class="btn btn-outline-dark" th:href="@{/movies(sort='newest')}" th:text="#{home.latest.all}">Zobacz wszystkie</a>
+        </div>
+
+        <div th:if="${#lists.isEmpty(featuredMovies)}" class="alert alert-info" th:text="#{home.empty}">Brak filmow.</div>
+
+        <div class="row g-4" th:if="${!#lists.isEmpty(featuredMovies)}">
+            <div class="col-sm-6 col-lg-3" th:each="movie : ${featuredMovies}">
+                <a class="movie-tile" th:href="@{/movies/{id}(id=${movie.id})}">
+                    <span class="poster"
+                          th:style="${movie.posterPath != null
+                        ? 'background-image:url(' + movie.posterPath + ')'
+                        : ''}"></span>
+                    <span class="movie-tile-body">
+                        <strong th:text="${movie.title}">Tytul</strong>
+                        <small th:text="${movie.releaseYear != null ? movie.releaseYear : #messages.msg('home.noYear')}">2026</small>
+                    </span>
+                </a>
+            </div>
+        </div>
+    </section>
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    (() => {
+        const slides = Array.from(document.querySelectorAll('.home-hero-slide'));
+        if (slides.length === 0) {
+            return;
+        }
+
+        let current = 0;
+        slides[current].classList.add('is-active');
+
+        if (slides.length === 1) {
+            return;
+        }
+
+        window.setInterval(() => {
+            slides[current].classList.remove('is-active');
+            current = (current + 1) % slides.length;
+            slides[current].classList.add('is-active');
+        }, 5200);
+    })();
+</script>
+</body>
+</html>

@@ -6,35 +6,36 @@
 <div th:replace="~{fragments/layout :: nav}"></div>
 
 <main class="container py-4">
-    <a th:href="@{/movies}" class="btn btn-outline-secondary mb-3" th:text="#{button.back}">Wróć</a>
+    <a th:href="@{/movies}" class="btn btn-outline-secondary mb-3" th:text="#{button.back}">Wroc</a>
 
     <div class="row g-4">
         <div class="col-md-4">
             <div class="poster poster-large shadow"
-                 th:style="${movie.posterPath != null}
-                     ? 'background-image:url(' + ${movie.posterPath} + ')'
-                     : ''"></div>
+                 th:style="${movie.posterPath != null
+                     ? 'background-image:url(' + movie.posterPath + ')'
+                     : ''}"></div>
         </div>
         <div class="col-md-8">
-            <h1 th:text="${movie.title}">Tytuł</h1>
+            <h1 th:text="${movie.title}">Tytul</h1>
             <p class="text-muted" th:text="${movie.originalTitle}">Original</p>
             <p>
                 <span class="badge text-bg-warning fs-6">
-                    ★ <span th:text="${#numbers.formatDecimal(average,1,1)}">0.0</span>
+                    <span th:text="${#numbers.formatDecimal(average,1,1)}">0.0</span>
                 </span>
             </p>
             <p th:text="${movie.description}">Opis</p>
             <p>
-                <strong>Rok:</strong>
+                <strong th:text="#{movie.year}">Rok:</strong>
                 <span th:text="${movie.releaseYear}"></span>
                 |
-                <strong>Czas:</strong>
-                <span th:text="${movie.durationMinutes}"></span> min
+                <strong th:text="#{movie.duration}">Czas:</strong>
+                <span th:text="${movie.durationMinutes}"></span>
+                <span th:text="#{movie.minutes}">min</span>
             </p>
             <div class="mb-3">
                 <span class="badge text-bg-secondary me-1"
                       th:each="g : ${movie.genres}"
-                      th:text="${g.namePl}">Gatunek</span>
+                      th:text="${#locale.language == 'en' ? g.nameEn : g.namePl}">Gatunek</span>
             </div>
 
             <div sec:authorize="isAuthenticated()" class="card mb-3">
@@ -43,7 +44,7 @@
                           method="post"
                           class="row g-2 align-items-end">
                         <div class="col-auto">
-                            <label class="form-label">Twoja ocena</label>
+                            <label class="form-label" th:text="#{movie.yourRating}">Twoja ocena</label>
                             <input type="number"
                                    name="value"
                                    min="1"
@@ -52,7 +53,7 @@
                                    value="8">
                         </div>
                         <div class="col-auto">
-                            <button class="btn btn-warning">Oceń</button>
+                            <button class="btn btn-warning" th:text="#{movie.rate}">Ocen</button>
                         </div>
                     </form>
                     <hr>
@@ -60,7 +61,7 @@
                           method="post"
                           class="row g-2 align-items-end">
                         <div class="col-auto">
-                            <label class="form-label">Watchlista</label>
+                            <label class="form-label" th:text="#{movie.watchlist}">Watchlista</label>
                             <select name="status" class="form-select">
                                 <option th:each="s : ${statuses}"
                                         th:value="${s}"
@@ -68,14 +69,14 @@
                             </select>
                         </div>
                         <div class="col-auto">
-                            <button class="btn btn-outline-dark">Dodaj</button>
+                            <button class="btn btn-outline-dark" th:text="#{movie.watchlist.add}">Dodaj</button>
                         </div>
                     </form>
                 </div>
             </div>
 
-            <div sec:authorize="isAnonymous()" class="alert alert-info">
-                Zaloguj się, aby ocenić film i dodać recenzję.
+            <div sec:authorize="isAnonymous()" class="alert alert-info" th:text="#{movie.loginPrompt}">
+                Zaloguj sie, aby ocenic film i dodac recenzje.
             </div>
         </div>
     </div>
@@ -91,23 +92,24 @@
                       minlength="20"
                       maxlength="2000"
                       rows="4"
-                      placeholder="Napisz recenzję..."
+                      th:placeholder="#{movie.review.placeholder}"
                       required></textarea>
-            <button class="btn btn-dark" th:text="#{movie.addReview}">Dodaj recenzję</button>
+            <button class="btn btn-dark" th:text="#{movie.addReview}">Dodaj recenzje</button>
         </form>
         <div class="card mb-2" th:each="review : ${reviews}">
             <div class="card-body">
                 <div class="d-flex justify-content-between gap-3">
                     <div>
                         <strong th:text="${review.user.username}">user</strong>
-                        <p class="mb-0" th:text="${review.content}">Treść</p>
+                        <p class="mb-0" th:text="${review.content}">Tresc</p>
                     </div>
                     <form sec:authorize="isAuthenticated()"
                           th:if="${review.user.email == #authentication.name}"
                           th:action="@{/reviews/{id}/delete(id=${review.id})}"
                           method="post"
-                          onsubmit="return confirm('Usunąć recenzję?')">
-                        <button class="btn btn-sm btn-outline-danger">Usuń</button>
+                          th:data-confirm="#{confirm.deleteReview}"
+                          onsubmit="return confirm(this.dataset.confirm)">
+                        <button class="btn btn-sm btn-outline-danger" th:text="#{button.delete}">Usun</button>
                     </form>
                 </div>
             </div>

@@ -11,26 +11,26 @@
             <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
             <form th:action="@{/register}" th:object="${registerForm}" method="post">
                 <div class="mb-3">
-                    <label class="form-label">Nazwa użytkownika</label>
+                    <label class="form-label" th:text="#{register.username}">Nazwa uzytkownika</label>
                     <input class="form-control" th:field="*{username}">
                     <div class="text-danger small" th:errors="*{username}"></div>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">Email</label>
+                    <label class="form-label" th:text="#{auth.email}">Email</label>
                     <input class="form-control" th:field="*{email}">
                     <div class="text-danger small" th:errors="*{email}"></div>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">Hasło</label>
+                    <label class="form-label" th:text="#{auth.password}">Haslo</label>
                     <input class="form-control" type="password" th:field="*{password}">
                     <div class="text-danger small" th:errors="*{password}"></div>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">Powtórz hasło</label>
+                    <label class="form-label" th:text="#{register.confirmPassword}">Powtorz haslo</label>
                     <input class="form-control" type="password" th:field="*{confirmPassword}">
                     <div class="text-danger small" th:errors="*{confirmPassword}"></div>
                 </div>
-                <button class="btn btn-warning w-100">Utwórz konto</button>
+                <button class="btn btn-warning w-100" th:text="#{register.submit}">Utworz konto</button>
             </form>
         </div>
     </div>
