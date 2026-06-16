@@ -25,6 +25,15 @@ public class MovieService {
         return movieRepository.search(normalize(q), genreId, yearFrom, yearTo, pageable);
     }
 
+    public Page<Movie> searchOrderByRating(
+            String q,
+            Long genreId,
+            Integer yearFrom,
+            Integer yearTo,
+            Pageable pageable) {
+        return movieRepository.searchOrderByRating(normalize(q), genreId, yearFrom, yearTo, pageable);
+    }
+
     public List<Movie> latest() {
         return movieRepository.findTop4ByOrderByCreatedAtDesc();
     }

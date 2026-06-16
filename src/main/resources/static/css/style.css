@@ -145,6 +145,32 @@ body {
     overflow: hidden;
 }
 
+.movie-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 4px;
+}
+
+.movie-card-header .card-title {
+    margin-bottom: 0;
+}
+
+.rating-badge {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    min-height: 28px;
+    padding: 4px 8px;
+    border-radius: 8px;
+    background: #fff3cd;
+    color: #6b4e00;
+    font-weight: 700;
+    font-size: .9rem;
+    line-height: 1;
+}
+
 .movie-description {
     color: #4e5661;
     display: -webkit-box;

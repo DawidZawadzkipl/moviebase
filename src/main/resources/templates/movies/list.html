@@ -63,6 +63,7 @@
                     <option value="newest" th:selected="${sort == 'newest'}" th:text="#{movies.sort.newest}">Najnowsze dodane</option>
                     <option value="yearDesc" th:selected="${sort == 'yearDesc'}" th:text="#{movies.sort.yearDesc}">Rok malejaco</option>
                     <option value="yearAsc" th:selected="${sort == 'yearAsc'}" th:text="#{movies.sort.yearAsc}">Rok rosnaco</option>
+                    <option value="ratingDesc" th:selected="${sort == 'ratingDesc'}" th:text="#{movies.sort.ratingDesc}">Najwyzej oceniane</option>
                     <option value="durationDesc" th:selected="${sort == 'durationDesc'}" th:text="#{movies.sort.durationDesc}">Najdluzsze</option>
                 </select>
             </div>
@@ -83,8 +84,13 @@
                          ? 'background-image:url(' + movie.posterPath + ')'
                          : ''}"></div>
                 <div class="card-body d-flex flex-column">
-                    <h2 class="card-title h5" th:text="${movie.title}">Tytul</h2>
-                    <p class="text-muted small"
+                    <div class="movie-card-header">
+                        <h2 class="card-title h5" th:text="${movie.title}">Tytul</h2>
+                        <span class="rating-badge"
+                              th:title="#{movie.rating}"
+                              th:text="|★ ${#numbers.formatDecimal(averages[movie.id],1,1)}|">0.0</span>
+                    </div>
+                    <p class="text-muted small mb-2"
                        th:text="|${movie.releaseYear} / ${movie.durationMinutes} min|">2026</p>
                     <p class="movie-description" th:text="${movie.description}">Opis</p>
                     <a class="btn btn-dark mt-auto"

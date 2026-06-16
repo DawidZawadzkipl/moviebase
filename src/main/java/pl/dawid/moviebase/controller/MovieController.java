@@ -3,6 +3,7 @@ package pl.dawid.moviebase.controller;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
@@ -12,6 +13,9 @@ import org.springframework.web.bind.annotation.*;
 import pl.dawid.moviebase.model.*;
 import pl.dawid.moviebase.repository.GenreRepository;
 import pl.dawid.moviebase.service.*;
+
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 public class MovieController {
@@ -55,8 +59,14 @@ public class MovieController {
             to = yearFrom;
         }
 
-        model.addAttribute("movies",
-                movieService.search(q, genreId, from, to, PageRequest.of(currentPage, 12, sortFor(sort))));
+        Page<Movie> movies = "ratingDesc".equals(sort)
+                ? movieService.searchOrderByRating(q, genreId, from, to, PageRequest.of(currentPage, 12))
+                : movieService.search(q, genreId, from, to, PageRequest.of(currentPage, 12, sortFor(sort)));
+        Map<Long, Double> averages = movies.getContent().stream()
+                .collect(Collectors.toMap(Movie::getId, movie -> ratingService.average(movie.getId())));
+
+        model.addAttribute("movies", movies);
+        model.addAttribute("averages", averages);
         model.addAttribute("q", q);
         model.addAttribute("genreId", genreId);
         model.addAttribute("yearFrom", from);
