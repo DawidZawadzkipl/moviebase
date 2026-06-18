@@ -1,47 +1,85 @@
 # MovieBase
 
-Mini klon Filmwebu: Spring Boot + Thymeleaf + Bootstrap + PostgreSQL/MySQL.
+MovieBase is a Spring Boot web application for browsing a movie database, filtering and sorting titles, rating movies, writing reviews, and managing a personal watchlist.
 
-## Co jest gotowe
-- logowanie i rejestracja,
-- role `ADMIN` i `USER`,
-- BCrypt dla haseł,
-- CRUD filmów w panelu admina,
-- upload plakatu,
-- gatunki,
-- wyszukiwarka,
-- stronicowanie,
-- oceny 1-10,
-- recenzje,
-- watchlista,
-- walidacja,
-- i18n PL/EN.
+## Screenshots
 
-## Uruchomienie z PostgreSQL
+Store project screenshots in `docs/screenshots/` and reference them from this README, for example:
+
+![Home page](docs/screenshots/home.png)
+![Movie database](docs/screenshots/movies.png)
+![Movie details](docs/screenshots/movie-details.png)
+![Admin panel](docs/screenshots/admin-panel.png)
+
+## Tech Stack
+
+- Java
+- Spring Boot
+- Spring MVC
+- Spring Security
+- Spring Data JPA / Hibernate
+- Thymeleaf
+- Bootstrap 5
+- PostgreSQL
+- Maven
+
+## Features
+
+- User registration and login
+- Session-based authentication with Spring Security
+- `ADMIN` and `USER` roles
+- BCrypt password hashing
+- Movie database with posters, descriptions, release year, runtime, and genres
+- Movie search, filtering, sorting, and pagination
+- Movie rating system
+- User reviews
+- User watchlist
+- Admin panel for managing movies, genres, and reviews
+- Poster upload in the admin panel
+- Polish and English interface translations
+- Server-side rendering with Thymeleaf
+
+## Running the Application
+
+Create a PostgreSQL database:
 
 ```sql
 CREATE DATABASE moviebase;
 ```
 
-W `src/main/resources/application.properties` ustaw login/hasło do bazy.
+Update the database credentials in:
+
+```text
+src/main/resources/application.properties
+```
+
+Run the application:
 
 ```bash
 mvn spring-boot:run
 ```
 
-Adres: `http://localhost:8090`
+The application is available at:
 
-## Konta testowe
-Tworzą się automatycznie przy pierwszym starcie:
+```text
+http://localhost:8090
+```
 
-- `admin@example.com` / `admin123`
-- `user@example.com` / `user123`
+## Test Accounts
 
-## Tomcat
-Projekt buduje się jako `.war`:
+The following accounts are created automatically on first startup:
+
+```text
+admin@example.com / admin123
+user@example.com / user123
+```
+
+## Deployment
+
+The project is packaged as a `.war` file:
 
 ```bash
 mvn clean package
 ```
 
-Plik z `target/` można wrzucić do `webapps` w Apache Tomcat 10.1+.
+The generated file from the `target/` directory can be deployed to Apache Tomcat 10.1+.
