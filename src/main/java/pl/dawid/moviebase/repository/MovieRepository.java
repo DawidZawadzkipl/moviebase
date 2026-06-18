@@ -53,31 +53,39 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
 
     @Query(
             value = """
-                    select distinct m from Movie m left join m.genres g
+                    select m.*
+                    from movie m
+                    left join movie_genres mg on mg.movie_id = m.id
+                    left join genre g on g.id = mg.genre_id
+                    left join rating r on r.movie_id = m.id
                     where (:q is null or :q = ''
                         or lower(m.title) like lower(concat('%', :q, '%'))
-                        or lower(m.originalTitle) like lower(concat('%', :q, '%'))
+                        or lower(m.original_title) like lower(concat('%', :q, '%'))
                         or lower(m.description) like lower(concat('%', :q, '%'))
-                        or lower(g.namePl) like lower(concat('%', :q, '%'))
-                        or lower(g.nameEn) like lower(concat('%', :q, '%')))
+                        or lower(g.name_pl) like lower(concat('%', :q, '%'))
+                        or lower(g.name_en) like lower(concat('%', :q, '%')))
                     and (:genreId is null or g.id = :genreId)
-                    and (:yearFrom is null or m.releaseYear >= :yearFrom)
-                    and (:yearTo is null or m.releaseYear <= :yearTo)
-                    order by (select coalesce(avg(r.ratingValue), 0) from Rating r where r.movie = m) desc,
-                        m.title asc
+                    and (:yearFrom is null or m.release_year >= :yearFrom)
+                    and (:yearTo is null or m.release_year <= :yearTo)
+                    group by m.id
+                    order by coalesce(avg(r.rating_value), 0) desc, m.title asc
                     """,
             countQuery = """
-                    select count(distinct m) from Movie m left join m.genres g
+                    select count(distinct m.id)
+                    from movie m
+                    left join movie_genres mg on mg.movie_id = m.id
+                    left join genre g on g.id = mg.genre_id
                     where (:q is null or :q = ''
                         or lower(m.title) like lower(concat('%', :q, '%'))
-                        or lower(m.originalTitle) like lower(concat('%', :q, '%'))
+                        or lower(m.original_title) like lower(concat('%', :q, '%'))
                         or lower(m.description) like lower(concat('%', :q, '%'))
-                        or lower(g.namePl) like lower(concat('%', :q, '%'))
-                        or lower(g.nameEn) like lower(concat('%', :q, '%')))
+                        or lower(g.name_pl) like lower(concat('%', :q, '%'))
+                        or lower(g.name_en) like lower(concat('%', :q, '%')))
                     and (:genreId is null or g.id = :genreId)
-                    and (:yearFrom is null or m.releaseYear >= :yearFrom)
-                    and (:yearTo is null or m.releaseYear <= :yearTo)
-                    """)
+                    and (:yearFrom is null or m.release_year >= :yearFrom)
+                    and (:yearTo is null or m.release_year <= :yearTo)
+                    """,
+            nativeQuery = true)
     Page<Movie> searchOrderByRating(
             @Param("q") String q,
             @Param("genreId") Long genreId,

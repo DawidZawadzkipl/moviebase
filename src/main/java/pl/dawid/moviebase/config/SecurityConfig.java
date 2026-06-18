@@ -48,6 +48,7 @@ public class SecurityConfig {
                                 "/movies/**",
                                 "/login",
                                 "/register",
+                                "/error",
                                 "/css/**",
                                 "/uploads/**")
                         .permitAll()
